@@ -4,7 +4,9 @@ import time
 import requests
 import warnings
 import datetime
-from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QPushButton, QComboBox, QLabel, QFileDialog,QTextEdit,QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QVBoxLayout, \
+                            QPushButton, QComboBox, QLabel, QFileDialog, \
+                            QTextEdit, QLineEdit
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 
 # Suppressing the warning
@@ -87,7 +89,7 @@ class MonitorThread(QThread):
             return f"Failed to upload file. Status code: {response.status_code}"
 
         # Helper function to get the latest file in the directory
-    def get_zip_file(self, directory):
+    def get_LPZ_file(self, directory):
         """
         Get the latest .lpz file in the directory.
         Returns the path to the file if found, None otherwise.
@@ -95,10 +97,10 @@ class MonitorThread(QThread):
         files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".lpz")]
         if not files:
             return None
-        zip_file = max(files, key=lambda x: os.path.getmtime(os.path.join(directory, x)))
-        zip_file = zip_file.replace("/","\\")
-        print("zipfile: ",zip_file)
-        return zip_file
+        LPZ_file = max(files, key=lambda x: os.path.getmtime(os.path.join(directory, x)))
+        LPZ_file = LPZ_file.replace("/","\\")
+        print("LPZfile: ",LPZ_file)
+        return LPZ_file
 
     def run(self):
         """
@@ -106,22 +108,22 @@ class MonitorThread(QThread):
         """
         last_uploaded_time = 0
         while self.monitoring:
-            zip_file = self.get_zip_file(self.directory)
-            if zip_file:
-                zip_file_time = os.path.getmtime(zip_file)
-                if zip_file_time > last_uploaded_time:
+            LPZ_file = self.get_LPZ_file(self.directory)
+            if LPZ_file:
+                LPZ_file_time = os.path.getmtime(LPZ_file)
+                if LPZ_file_time > last_uploaded_time:
                     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    print(f"\n\n[{current_time}] New file found: {os.path.basename(zip_file)}.")
+                    print(f"\n\n[{current_time}] New file found: {os.path.basename(LPZ_file)}.")
                     chosen_program = self.programs[self.combo_index]
-                    response = self.upload_file(self.directory, zip_file, chosen_program["ProgramId"], chosen_program["FriendlyName"])
+                    response = self.upload_file(self.directory, LPZ_file, chosen_program["ProgramId"], chosen_program["FriendlyName"])
                     if "Failed to upload file" in response:
                         print(response)  # Print error message
                     else:
                         print("File uploaded successfully.")
-                        last_uploaded_time = zip_file_time
+                        last_uploaded_time = LPZ_file_time
                         self.upload_time_signal.emit(current_time)
             else:
-                print("No .zip files found in the directory.")
+                print("No .LPZ files found in the directory.")
             time.sleep(10)  # Check every 10 seconds
 
     def stop(self):
@@ -248,10 +250,14 @@ class MainWindow(QDialog):
                 self.monitor_thread.stop()
                 self.monitoring = False
                 self.monitor_button.setText("Enable Monitor")
+                self.program_combo.setEnabled(True)
+                self.directory_button.setEnabled(True)
                 print("Monitoring disabled.")
             else:
                 self.monitoring = True
                 self.monitor_button.setText("Disable Monitor")
+                self.program_combo.setEnabled(False)
+                self.directory_button.setEnabled(False)
                 self.monitor_thread = MonitorThread(self.directory, self.programs, self.program_combo.currentIndex(), self.upload_log, self.api_endpoint)
                 self.monitor_thread.upload_time_signal.connect(self.update_upload_log)
                 self.monitor_thread.start()
