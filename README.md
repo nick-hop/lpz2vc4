@@ -35,11 +35,7 @@ The application will monitor a directory of your choice for changes. When a new 
 
 ## Windows Binary
 
-A binary version of the application for windows is available in the `/dist/` directory. This binary is standalone and does not require Python or any other dependencies to be installed. You can run it by double-clicking on it in your file explorer, or by running the following command in your terminal:
-
-```bash
-./dist/lpz2VC4
-```
+A binary version of the application for windows is available in Releases. This binary is standalone and does not require Python or any other dependencies to be installed. You can run it by double-clicking on it in your file explorer, or by running the following command in your terminal:
 
 ## Contributing
 
