@@ -124,7 +124,7 @@ class MonitorThread(QThread):
                         self.upload_time_signal.emit(current_time)
             else:
                 print("No .LPZ files found in the directory.")
-            time.sleep(10)  # Check every 10 seconds
+            time.sleep(1)  
 
     def stop(self):
         """
