@@ -10,9 +10,12 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt
 # Suppressing the warning
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 
-
 # Function to query the VC4 server for all programs
 def get_all_programs():
+    """
+    Function to query the VC4 server for all programs.
+    Returns a list of dictionaries representing the programs if successful, None otherwise.
+    """
     headers = {
         'accept': 'application/json',
         'Authorization': auth_token
@@ -35,9 +38,15 @@ def get_all_programs():
         return None
 
 class MonitorThread(QThread):
+    """
+    Thread class for monitoring a directory and uploading new files to the VC4 server.
+    """
     upload_time_signal = pyqtSignal(str)
 
     def __init__(self, directory, programs, combo_index, upload_log,api_endpoint):  
+        """
+        Initialize the MonitorThread.
+        """
         super().__init__()
         self.directory = directory
         self.programs = programs
@@ -48,6 +57,10 @@ class MonitorThread(QThread):
     
     # Upload the file to the VC4 server
     def upload_file(self, file_path, file_name, program_id, friendly_name):
+        """
+        Upload the file to the VC4 server.
+        Returns a success message if the upload was successful, an error message otherwise.
+        """
         # Construct the request headers
         headers = {
             'Authorization': auth_token
@@ -75,6 +88,10 @@ class MonitorThread(QThread):
 
         # Helper function to get the latest file in the directory
     def get_zip_file(self, directory):
+        """
+        Get the latest .lpz file in the directory.
+        Returns the path to the file if found, None otherwise.
+        """
         files = [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".lpz")]
         if not files:
             return None
@@ -84,6 +101,9 @@ class MonitorThread(QThread):
         return zip_file
 
     def run(self):
+        """
+        Main loop for the thread. Monitors the directory and uploads new files to the VC4 server.
+        """
         last_uploaded_time = 0
         while self.monitoring:
             zip_file = self.get_zip_file(self.directory)
@@ -105,12 +125,19 @@ class MonitorThread(QThread):
             time.sleep(10)  # Check every 10 seconds
 
     def stop(self):
+        """
+        Stop the thread.
+        """
         self.monitoring = False
 
-
-
 class AuthIpDialog(QDialog):
+    """
+    Dialog for entering the auth token and IP address.
+    """
     def __init__(self, auth_token=None, ip_address=None):
+        """
+        Initialize the AuthIpDialog.
+        """
         super().__init__()
 
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -141,14 +168,26 @@ class AuthIpDialog(QDialog):
         self.setLayout(self.layout)
 
     def get_auth_token(self):
+        """
+        Get the entered auth token.
+        """
         return self.auth_token_field.text()
 
     def get_ip_address(self):
+        """
+        Get the entered IP address.
+        """
         return self.ip_address_field.text()   
 
 # Main function to monitor the directory and upload new files
 class MainWindow(QDialog):
+    """
+    Main window for the application.
+    """
     def __init__(self, programs,auth_token=None, api_endpoint=None):
+        """
+        Initialize the MainWindow.
+        """
         super().__init__()
 
         self.setWindowTitle("LPZ-2-VC4")
@@ -192,12 +231,18 @@ class MainWindow(QDialog):
         self.setLayout(self.layout)
 
     def select_directory(self):
+        """
+        Open a dialog to select a directory.
+        """
         self.directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         if self.directory:
             print(f"Selected directory: {self.directory}")
             self.selected_directory_label.setText(f"Selected directory: {self.directory}")   
 
     def enable_monitor(self):
+        """
+        Enable or disable the monitor.
+        """
         if self.directory:
             if self.monitoring:
                 self.monitor_thread.stop()
@@ -214,10 +259,16 @@ class MainWindow(QDialog):
             print("No directory selected.")
 
     def update_upload_log(self, upload_time):
+        """
+        Update the upload log with the given upload time.
+        """
         self.upload_log.append(f"Last upload time: {upload_time}") 
 
    
 if __name__ == "__main__":
+    """
+    Main entry point for the application.
+    """
     app = QApplication(sys.argv)
 
     home_dir = os.path.expanduser("~")
@@ -244,9 +295,7 @@ if __name__ == "__main__":
     
     api_endpoint = f"https://{ip_address}/VirtualControl/config/api/ProgramLibrary"
 
-
     programs = get_all_programs()
-
     if programs:
         window = MainWindow(programs, auth_token, api_endpoint)
         window.show()
