@@ -8,6 +8,10 @@ LPZ2VC4 is a Python application designed to interact with a VC4 server. It uses 
 - Monitor a directory for changes and upload new programs to the server
 - Save and load the authorization token and server IP address to a configuration file
 
+
+## Todo
+- Add ability to load new programs that do not yet exist on the server
+
 ## Installation
 
 To install the dependencies for this project, you will need to have Python installed on your machine. Once Python is installed, you can install the dependencies by running the following command in your terminal:
