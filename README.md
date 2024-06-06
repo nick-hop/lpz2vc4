@@ -4,7 +4,6 @@ LPZ2VC4 is a Python application designed to interact with a VC4 server. It uses 
 
 ## Features
 
-- Load an authorization token from an environment variable
 - Query the VC4 server for all programs
 - Monitor a directory for changes and upload new programs to the server
 - Save and load the authorization token and server IP address to a configuration file
