@@ -1,10 +1,10 @@
 import os
+import sys
 import time
 import requests
 import warnings
 import datetime
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QPushButton, QComboBox, QLabel, QFileDialog,QTextEdit,QLineEdit
-import sys
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 
 # Suppressing the warning
