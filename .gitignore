@@ -1,0 +1,9 @@
+.env
+
+*.json
+*.spec
+
+/build
+/.venv
+/__pycache__
+/.vscode
