@@ -92,7 +92,7 @@ class MonitorThread(QThread):
         if not files:
             return None
         LPZ_file = max(files, key=lambda x: os.path.getmtime(os.path.join(directory, x)))
-        LPZ_file = LPZ_file.replace("/","\\")
+        LPZ_file = os.path.normpath(LPZ_file)
         return LPZ_file
 
     def run(self):
