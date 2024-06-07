@@ -38,6 +38,8 @@ python -m lpz2VC4.py
 
 This will start the application. You will be prompted to enter your authorization token and the IP address of the VC4 server. These will be saved to a configuration file in your home directory for future use.
 
+Your Authorization token will require 'Read-Write' priviledges
+
 The application will monitor a directory of your choice for changes. When a new program is added to the directory, it will be uploaded to the VC4 server.
 
 ## Contributing
