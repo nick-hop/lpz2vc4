@@ -7,7 +7,7 @@ It uses PyQt5 for the GUI and requests for the HTTP requests.
 Author: Nick Hopkins
 Creation Date: 06/06/2024
 """
-_software_version = "v1.0.2"
+_software_version = "v1.0.3"
 
 
 import os
